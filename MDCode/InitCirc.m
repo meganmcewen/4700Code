@@ -6,6 +6,7 @@ Method = 'VE'; % VE -- verlot; FD -- Forward Difference
 
 Mass0 = 14 * C.am; % Silicon
 Mass1 = 5 * C.am; % Argon
+Mass2 = 210*C.am; %Astatine
 
 AtomSpacing = 0.5430710e-9;
 LJSigma = AtomSpacing / 2^(1/6);
@@ -22,7 +23,7 @@ Limits = [-Size +Size -Size +Size]; % square is good
 PlDelt = 5*dt;
 MarkerSize = 10;
 PlotFile = 'Block.gif';
-doPlotImage = 0;
+doPlotImage = 1;
 PlotSize = [100, 100, 1049, 1049];
 
 ScaleV = .2e-11;

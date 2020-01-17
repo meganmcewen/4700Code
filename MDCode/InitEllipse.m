@@ -16,9 +16,9 @@ PhiCutoff = 3 * AtomSpacing * 1.1;
 
 T = 30;
 
-AddRectAtomicArray(10, 10, 0, 0, 0, 0, 0, T, 0);
+AddEllipticalAtomicArray(10,5,0,0,0,0,0,T,2);
 
-Size = 8 * AtomSpacing;
+Size = 20 * AtomSpacing;
 Limits = [-Size +Size -Size +Size]; % square is good
 PlDelt = 5*dt;
 MarkerSize = 10;

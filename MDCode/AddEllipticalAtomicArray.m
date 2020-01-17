@@ -1,7 +1,7 @@
-function AddHCPAtomicArray(LAtoms,WAtoms,X0,Y0,VX0,VY0,RotAng,InitDist,Temp,Type)
+function AddEllipticalAtomicArray(radL, radW, X0, Y0, VX0, VY0, InitDist, Temp, Type)
 global C
 global x y AtomSpacing
-global nAtoms % MinX MaxX MinY MaxY
+global nAtoms
 global AtomType Vx Vy Mass0 Mass1 Mass2
 
 if Type == 0
@@ -15,27 +15,25 @@ else if Type == 1
     end
 end
 
-L = ((LAtoms - 1) + 0.5) * AtomSpacing;
-W = (WAtoms - 1) * sqrt(3) / 2 * AtomSpacing;
+L = (2*radL - 1) * AtomSpacing;
+W = (2*radW - 1) * AtomSpacing;
 
-p =1;
-% n = 4;
-for i=1:LAtoms
-    for j = 1:WAtoms
-        y(end + 1) = (sqrt(3)*(j - 1) * AtomSpacing) / 2.0;
-        if rem(j, 2) == 1
-            x(end + 1) = (i - 1) * AtomSpacing;
+xp(1, :) = linspace(-L/2, L/2, 2*radL);
+yp(1, :) = linspace(-W/2, W/2, 2*radW);
+
+numAtoms = 0;
+for i = 1:2*radL
+    for j = 1:2*radW
+        if ((xp(i)^2)/radL^2) + ((yp(j)^2)/radW^2) <= 1
+            numAtoms = numAtoms+1;
+            x(nAtoms + numAtoms) = xp(i);
+            y(nAtoms + numAtoms) = yp(j);
         else
-            x(end + 1) = AtomSpacing / 2.0 + (i - 1) * AtomSpacing;
+            i
+            j
         end
-        p = p + 1;
     end
 end
-
-x = x - L/2;
-y = y - W/2;
-
-numAtoms = p-1;
 
 x(nAtoms + 1:nAtoms + numAtoms) = x(nAtoms + 1:nAtoms + numAtoms) + ...
     (rand(1, numAtoms) - 0.5) * AtomSpacing * InitDist + X0;
@@ -48,10 +46,10 @@ if Temp == 0
     Vx(nAtoms + 1:nAtoms + numAtoms) = 0;
     Vy(nAtoms + 1:nAtoms + numAtoms) = 0;
 else
-    std0 = sqrt(C.kb*Temp/Mass);
+    std0 = sqrt(C.kb * Temp / Mass);
 
-    Vx(nAtoms + 1:nAtoms + numAtoms) = std0*randn(1, numAtoms);
-    Vy(nAtoms + 1:nAtoms + numAtoms) = std0*randn(1, numAtoms);
+    Vx(nAtoms + 1:nAtoms + numAtoms) = std0 * randn(1, numAtoms);
+    Vy(nAtoms + 1:nAtoms + numAtoms) = std0 * randn(1, numAtoms);
 end
 
 Vx(nAtoms + 1:nAtoms + numAtoms) = Vx(nAtoms + 1:nAtoms + numAtoms) - ...

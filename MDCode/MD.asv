@@ -10,7 +10,7 @@ global Vx Vy x y Fx Fy AtomSpacing
 global Phi nAtoms time Mass0 Mass1 Mass2 Pty0in Pty1in Pty2in
 global LJEpsilon LJSigma Phi0 AtomType
 global MinX MaxX MinY MaxY PhiTot KETot
-global nAtoms0 nAtoms1 nAtoms2 T T0 T1 T2 MarkerSize
+global nAtoms0 nAtoms1 nAtoms2 T T0 T1 MarkerSize
 global doPlotImage PlotCount map im PlotSize ScaleV ScaleF
 
 C.q_0 = 1.60217653e-19;             % electron charge
@@ -44,10 +44,10 @@ PlotPosOnly = 0;
 %InitThree
 % InitBlock
 % InitCirc
-%InitEllipse
+InitEllipse
 % InitBlock0
 % InitBlock0FD
-InitVStream
+%InitVStream
  %InitHCP
  %InitHCPBlob
 % InitVStreamHCP
@@ -69,7 +69,7 @@ dvy = zeros(1, nAtoms);
 
 Pty0in = AtomType == 0;
 Pty1in = AtomType == 1;
-Pty2in = AtomType == 2;
+Pty2in = AtomType == 2nAt
 
 nAtoms0 = sum(Pty0in);
 nAtoms1 = sum(Pty1in);
@@ -91,12 +91,10 @@ PhiTot(c) = sum(Phi) / 2;
 V2_0 = (Vx(Pty0in).*Vx(Pty0in) + Vy(Pty0in).*Vy(Pty0in));
 if nAtoms1
     V2_1 = (Vx(Pty1in).*Vx(Pty1in) + Vy(Pty1in).*Vy(Pty1in));
-else V2_1 = 0;
-end
-
-if nAtoms2
+else if nAtoms2
         V2_2 = (Vx(Pty2in).*Vx(Pty2in) + Vy(Pty2in).*Vy(Pty2in));
-else V2_2 = 0;
+    end
+    V2_1 = 0;
 end
 
 KE0 = mean(V2_0) * Mass0 * 0.5;
@@ -107,7 +105,6 @@ KETot(c) = (KE0 * nAtoms0 + KE1 * nAtoms1 + KE2 * nAtoms2);
 T(c) = KETot(c) / nAtoms / C.kb;
 T0(c) = KE0 / C.kb;
 T1(c) = KE1 / C.kb;
-T2(c) = KE2 / C.kb;
 
 if PlotPosOnly
     PlotOnlyP(c,Limits);
@@ -185,23 +182,20 @@ while t < TStop
     V2_0 = (Vx(Pty0in).*Vx(Pty0in)+Vy(Pty0in).*Vy(Pty0in));
     if nAtoms1
         V2_1 = (Vx(Pty1in).*Vx(Pty1in)+Vy(Pty1in).*Vy(Pty1in));
-    else V2_1 = 0;
-    end
-    
-    if nAtoms2
+    else if nAtoms2
             V2_2 = (Vx(Pty2in).*Vx(Pty2in)+Vy(Pty2in).*Vy(Pty2in));
-    else V2_2 = 0;
+        else
+        V2_1 = 0;
+        end
     end
 
     KE0 = mean(V2_0) * Mass0 * 0.5;
     KE1 = mean(V2_1) * Mass1 * 0.5;
-    KE2 = mean(V2_2) * Mass2 * 0.5;
 
-    KETot(c) = (KE0 * nAtoms0 + KE1 * nAtoms1 + KE2*nAtoms2);
+    KETot(c) = (KE0 * nAtoms0 + KE1 * nAtoms1);
     T(c) = KETot(c) / nAtoms / C.kb;
     T0(c) = KE0 / C.kb;
     T1(c) = KE1 / C.kb;
-    T2(c) = KE2 / C.kb;
 
     if t > Plt0
         fprintf('time: %g (%5.2g %%)\n', t, t / TStop * 100);
